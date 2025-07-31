@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        tools:context=".common.face_recognition.FaceDetectionFragment">
+
+        <include
+            layout="@layout/layout_guideline"/>
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:clipChildren="true"
+            android:clipToPadding="true"
+            android:clipToOutline="true"
+            android:id="@+id/llFrame"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="100dp"
+            app:layout_constraintDimensionRatio="1:1"
+            android:background="@drawable/bg_two_circle"
+            app:layout_constraintTop_toBottomOf="@+id/tvMessage"
+            app:layout_constraintBottom_toTopOf="@+id/btnAddFace"
+            app:layout_constraintStart_toStartOf="@+id/v_05"
+            app:layout_constraintEnd_toEndOf="@+id/v_95">
+            <FrameLayout
+                android:id="@+id/framecontainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <androidx.camera.view.PreviewView
+                    android:id="@+id/previewView_finder"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:scaleType="fillCenter" />
+                <com.aman.facerecognitionmlapp.MirrorCurveView
+                    android:id="@+id/mirrorCurve"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <View
+                    android:visibility="gone"
+                    android:id="@+id/scanLine"
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/holo_red_light"
+                    android:layout_gravity="start" />
+
+                <ImageView
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    android:id="@+id/ivCheck"
+                    android:layout_width="@dimen/dp_80"
+                    android:src="@drawable/ic_check"
+                    android:layout_height="@dimen/dp_80"
+                    android:layout_gravity="center" />
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="1:1"
+            android:background="@drawable/bg_two_circle"
+            android:id="@+id/llOuterFrame"
+            android:elevation="@dimen/dp_10"
+            android:clipChildren="true"
+            android:clipToPadding="true"
+            android:clipToOutline="true"
+            app:layout_constraintTop_toTopOf="@+id/llFrame"
+            app:layout_constraintBottom_toBottomOf="@+id/llFrame"
+            app:layout_constraintStart_toStartOf="@+id/llFrame"
+            app:layout_constraintEnd_toEndOf="@+id/llFrame">
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvMessage"
+            android:text="@string/face_close_message"
+            app:layout_constraintStart_toStartOf="@+id/v_05"
+            app:layout_constraintEnd_toEndOf="@+id/v_95"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@+id/h_15"/>
+
+        <com.google.android.material.button.MaterialButton
+            app:cornerRadius="@dimen/dp_5"
+            android:id="@+id/btnAddFace"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="20sp"
+            android:layout_marginTop="20sp"
+            android:layout_marginEnd="20sp"
+            android:gravity="center"
+            android:padding="5sp"
+            android:text="@string/add_face"
+            app:layout_constraintStart_toStartOf="@+id/v_05"
+            app:layout_constraintEnd_toEndOf="@+id/v_95"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="@dimen/dp_20" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
