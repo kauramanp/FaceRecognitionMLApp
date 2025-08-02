@@ -45,6 +45,7 @@ class FaceDetectionActivity : AppCompatActivity(){
         binding.btnAddFace.setOnClickListener {
             getBitmapFromPreviewView(binding.previewViewFinder) { bitmap ->
                 if (bitmap != null) {
+                    cameraManager.stopCamera()
                     var dialog = Dialog(this)
                     var dialogBinding = LayoutFaceImageBinding.inflate(layoutInflater)
                     dialog.setContentView(dialogBinding.root)
@@ -56,6 +57,7 @@ class FaceDetectionActivity : AppCompatActivity(){
                     dialogBinding.btnAddFace.visibility = View.VISIBLE
                     dialogBinding.ivImage.setImageBitmap(bitmap)
                     dialogBinding.tvCross.setOnClickListener {
+                        cameraManager.startCamera()
                         dialog.dismiss()
                     }
                     dialogBinding.btnAddFace.setOnClickListener {
