@@ -93,7 +93,7 @@ class FaceDetectionActivity : AppCompatActivity(){
         bitmap!!.compress(Bitmap.CompressFormat.PNG, 100, outStream)
         outStream.flush()
         outStream.close()
-        cameraManager.addNewFace(bitmap) { isSaved, faces, floatArray ->
+        cameraManager.addNewFace(bitmap) { isSaved, faces, floatArray, faceStatus ->
             if (isSaved) {
                 val string = floatArray.joinToString(separator = ",")
                 prefs.putString(SharedConstants.KEY_FACE_ARRAY, string)

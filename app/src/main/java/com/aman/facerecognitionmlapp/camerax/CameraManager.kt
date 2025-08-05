@@ -13,7 +13,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import com.aman.facerecognitionmlapp.FaceStatus
 import com.google.mlkit.vision.face.Face
-import com.it.howFar.common.face_recognition.camerax.FaceContourDetectionProcessor
 import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.support.common.FileUtil
 
@@ -97,14 +96,14 @@ class CameraManager(
         }
     }
 
-    fun addNewFace(bitmap: Bitmap, onFaceProcessed: (Boolean, MutableList<Face>, FloatArray) -> Unit){
+    fun addNewFace(bitmap: Bitmap,checkLive: Boolean = true, onFaceProcessed: (Boolean, MutableList<Face>, FloatArray, FaceStatus) -> Unit){
         if (::faceContourDetectionProcessor.isInitialized.not()) {
             faceContourDetectionProcessor = FaceContourDetectionProcessor(context, faceNetInterpreter)
         }
-        faceContourDetectionProcessor.addNewFace(bitmap, { isSaved, faces, floatArray ->
+        faceContourDetectionProcessor.addNewFace(bitmap, { isSaved, faces, floatArray, faceStatus ->
             Log.e(TAG, "addNewFace: face saved faceContourDetectionProcessor 103 $floatArray isSaved $isSaved",)
             Log.e(TAG, "addNewFace: face saved faceContourDetectionProcessor 104 $faces",)
-            onFaceProcessed.invoke(isSaved, faces, floatArray)
+            onFaceProcessed.invoke(isSaved, faces, floatArray,faceStatus)
         })
     }
 

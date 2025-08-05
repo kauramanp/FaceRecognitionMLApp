@@ -1,4 +1,4 @@
-package com.it.howFar.common.face_recognition.camerax
+package com.aman.facerecognitionmlapp.camerax
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -6,11 +6,11 @@ import android.graphics.Matrix
 import android.graphics.Rect
 import android.util.Log
 import android.util.Pair
+import com.aman.facerecognitionmlapp.FaceStatus
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.Face
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetectorOptions
-import com.it.howFar.utils.FaceStatus
 import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.support.common.ops.NormalizeOp
 import org.tensorflow.lite.support.image.ImageProcessor
@@ -25,15 +25,16 @@ import kotlin.math.sqrt
 
 class FaceContourDetectionProcessor(
     private val context: Context,
-    private val interpreter: Interpreter,
-
-    ) {
+    private val interpreter: Interpreter, ) {
+    var lastFace : Face?= null
     private val TAG = "FaceContourDetectionPro"
+    var lastBlinkTime = System.currentTimeMillis()
     private val realTimeOpts = FaceDetectorOptions.Builder()
         .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
         .setContourMode(FaceDetectorOptions.CONTOUR_MODE_ALL)
 //        .setContourMode(FaceDetectorOptions.CONTOUR_MODE_NONE)
         .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
+        .enableTracking()
         .build()
 
     private val faceNetImageProcessor = ImageProcessor.Builder()
@@ -50,27 +51,57 @@ class FaceContourDetectionProcessor(
 
     private val detector = FaceDetection.getClient(realTimeOpts)
 
-    fun addNewFace(bitmap: Bitmap, onFaceProcessed: (Boolean, MutableList<Face>, FloatArray) -> Unit) {
+    fun addNewFace(bitmap: Bitmap, onFaceProcessed: (Boolean, MutableList<Face>, FloatArray, FaceStatus) -> Unit) {
         val inputImg = InputImage.fromBitmap(bitmap, 0)
 
         detector.process(inputImg).addOnSuccessListener { result ->
             Log.e(TAG, "addNewFace: result $result", )
             if (result.isNotEmpty()) {
                 result.forEach {
-//                    val faceBitmap =
-//                        cropToBox(bitmap, it.boundingBox, inputImg.rotationDegrees)
-                            //?: return@forEach
-                    val faceBitmap = cropAndResizeFace(bitmap, it.boundingBox)
-                    val tensorImg = TensorImage.fromBitmap(faceBitmap)
-                    val faceOutputArray = Array(1) {
-                        FloatArray(
-                            192
-                        )
+                    var blinkDetected = false
+                    var movementDetected = false
+                    // Check eye blink
+                    if (it.leftEyeOpenProbability != null && it.rightEyeOpenProbability != null) {
+                        val leftEye = it.leftEyeOpenProbability!!
+                        val rightEye = it.rightEyeOpenProbability!!
+
+                        if (leftEye < 0.5 && rightEye < 0.5) {
+                            // Eyes closed
+                            lastBlinkTime = System.currentTimeMillis()
+                        } else if (leftEye > 0.8 && rightEye > 0.8 && System.currentTimeMillis() - lastBlinkTime < 800) {
+                            // Blink completed
+                            blinkDetected = true
+                            Log.d("Liveness", "Blink detected")
+                        }
                     }
-                    val faceNetByteBuffer = faceNetImageProcessor.process(tensorImg).buffer
-                    interpreter.run(faceNetByteBuffer, faceOutputArray)
-                    Log.e(TAG, "faceOutputArray $faceOutputArray")
-                    onFaceProcessed.invoke(true, result, faceOutputArray[0])
+
+                    // Check head movement
+                    if (lastFace != null) {
+                        val move = Math.abs(lastFace!!.headEulerAngleY - it.headEulerAngleY) +
+                                Math.abs(lastFace!!.headEulerAngleZ - it.headEulerAngleZ)
+                        if (move > 10f) {
+                            movementDetected = true
+                            Log.d("Liveness", "Head movement detected")
+                        }
+                    }
+
+                    // Now determine liveness
+                    val isLive = blinkDetected || movementDetected
+                    if(isLive) {
+                        val faceBitmap = cropAndResizeFace(bitmap, it.boundingBox)
+                        val tensorImg = TensorImage.fromBitmap(faceBitmap)
+                        val faceOutputArray = Array(1) {
+                            FloatArray(
+                                192
+                            )
+                        }
+                        val faceNetByteBuffer = faceNetImageProcessor.process(tensorImg).buffer
+                        interpreter.run(faceNetByteBuffer, faceOutputArray)
+                        Log.e(TAG, "faceOutputArray $faceOutputArray")
+                        onFaceProcessed.invoke(true, result, faceOutputArray[0], FaceStatus.VALID)
+                    } else {
+
+                    }
                 }
 
             } else{

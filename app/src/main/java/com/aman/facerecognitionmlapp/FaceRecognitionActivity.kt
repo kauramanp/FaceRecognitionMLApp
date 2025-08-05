@@ -54,7 +54,7 @@ class FaceRecognitionActivity : AppCompatActivity() {
     }
 
     private fun checkFaces(bitmap: Bitmap) {
-        cameraManager.addNewFace(bitmap) { isSaved, faces, floatArray ->
+        cameraManager.addNewFace(bitmap) { isSaved, faces, floatArray, faceStatus ->
             if (isSaved) {
                 cameraManager.recogniseFace(floatArray, savedFloatArray, function = {
                     if (it == FaceStatus.RECOGNISED) {
