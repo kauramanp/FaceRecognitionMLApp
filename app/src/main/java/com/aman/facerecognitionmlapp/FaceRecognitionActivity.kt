@@ -39,7 +39,15 @@ class FaceRecognitionActivity : AppCompatActivity() {
                 .mapNotNull { it.toFloatOrNull() }
                 .toFloatArray()
         }
-        initCamera()
+        checkForCameraPermission{isCameraPermission->
+            if(isCameraPermission){
+                checkForStoragePermission{ isStoragePermission->
+                    if(isStoragePermission){
+                        initCamera()
+                    }
+                }
+            }
+        }
         binding.btnAddFace.setText(resources.getString(R.string.add_face))
 
         binding.btnAddFace.setOnClickListener {

@@ -7,4 +7,7 @@
     <string name="sorry_face_is_not_detected">Sorry! face is not detected</string>
     <string name="save">Save</string>
     <string name="verified_user">Verified User</string>
+    <string name="camera_permission_required">Camera permission required</string>
+    <string name="camera_is_required_to_click_picture">Camera permission is required to click picture</string>
+    <string name="go_to_settings">Go to settings</string>
 </resources>
