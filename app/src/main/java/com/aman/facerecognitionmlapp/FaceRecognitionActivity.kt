@@ -39,12 +39,10 @@ class FaceRecognitionActivity : AppCompatActivity() {
                 .mapNotNull { it.toFloatOrNull() }
                 .toFloatArray()
         }
-        checkForCameraPermission{isCameraPermission->
+        checkForCameraPermissions{isCameraPermission->
             if(isCameraPermission){
-                checkForStoragePermission{ isStoragePermission->
-                    if(isStoragePermission){
-                        initCamera()
-                    }
+                checkForStoragePermissions{
+                    initCamera()
                 }
             }
         }

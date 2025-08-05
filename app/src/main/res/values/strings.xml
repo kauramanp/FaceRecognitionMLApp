@@ -10,4 +10,5 @@
     <string name="camera_permission_required">Camera permission required</string>
     <string name="camera_is_required_to_click_picture">Camera permission is required to click picture</string>
     <string name="go_to_settings">Go to settings</string>
+    <string name="permission_denied">Permission Denied</string>
 </resources>

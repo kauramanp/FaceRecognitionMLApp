@@ -1,5 +1,17 @@
 package com.aman.facerecognitionmlapp
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+
 
 fun AppCompatActivity.checkForCameraPermissions(onPermissionResult: (Boolean) -> Unit) {
     val launcher = activityResultRegistry.register(
@@ -64,7 +76,7 @@ fun AppCompatActivity.checkForStoragePermissions(proceed: () -> Unit) {
         if (it) {
             proceed()
         } else {
-            toast(getString(R.string.permission_denied))
+            Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
         }
     }
 
