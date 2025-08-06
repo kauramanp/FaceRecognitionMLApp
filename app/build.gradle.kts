@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.aman.facerecognitionmlapp"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.aman.facerecognitionmlapp"

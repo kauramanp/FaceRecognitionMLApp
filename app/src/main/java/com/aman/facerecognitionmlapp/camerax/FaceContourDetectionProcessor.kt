@@ -105,10 +105,10 @@ class FaceContourDetectionProcessor(
                 }
 
             } else{
-                onFaceProcessed.invoke(false, mutableListOf(), floatArrayOf())
+                onFaceProcessed.invoke(false, mutableListOf(), floatArrayOf(), FaceStatus.NO_FACE)
             }
         } .addOnFailureListener {
-            onFaceProcessed.invoke(false, mutableListOf(), floatArrayOf())
+            onFaceProcessed.invoke(false, mutableListOf(), floatArrayOf(), FaceStatus.NO_FACE)
 
         }
     }
@@ -136,8 +136,6 @@ class FaceContourDetectionProcessor(
                 }
             }
         }
-
-//        return faceOutputArray[0]
     }
 
 
